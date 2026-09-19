@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Everything | Atisha Rajpurohit</title>
+<meta name="description" content="The full archive: every lecture, artifact, lab, talk, and article.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0B0D; --panel:#111114; --line:#26262C; --line2:#1D1D22;
+    --ink:#EDEDEA; --muted:#A8A8A2; --dim:#6E6E68;
+    --yellow:#F5C84C; --blue:#5B9DFF; --mint:#E9F5DC;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',sans-serif;line-height:1.5;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:var(--mint);}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 clamp(16px,4vw,48px);}
+  header{border-bottom:1px solid var(--line2);padding:20px 0;}
+  header .wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .brand{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:0.12em;color:var(--ink);text-decoration:none;font-weight:600;}
+  .back{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.08em;color:var(--mint);text-decoration:none;}
+  .back:hover{color:#fff;}
+  h1{font-size:clamp(28px,4vw,44px);font-weight:700;margin:48px 0 8px;}
+  .sub{color:var(--muted);font-size:15px;max-width:640px;}
+  section{padding:40px 0 8px;}
+  .kicker{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.2em;color:var(--yellow);margin-bottom:18px;}
+  .kicker.blue{color:var(--blue);}
+  .row{background:var(--panel);border:1px solid var(--line);padding:18px 20px;margin-bottom:14px;display:flex;flex-direction:column;gap:10px;}
+  .row h3{font-size:17px;font-weight:700;}
+  .row p{color:var(--muted);font-size:14px;}
+  .num{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.15em;color:var(--yellow);border:1px solid var(--line);padding:3px 9px;border-radius:999px;align-self:flex-start;}
+  .num.blue{color:var(--blue);}
+  .chips{display:flex;gap:10px;flex-wrap:wrap;}
+  .chip{font-family:'IBM Plex Mono',monospace;font-size:12px;text-decoration:none;padding:6px 11px;border-radius:4px;}
+  .chip.solid{color:#0B0B0D;background:var(--mint);font-weight:600;}
+  .chip.solid:hover{background:#fff;}
+  .chip.ghost{color:var(--mint);border:1px solid #33402B;}
+  .chip.ghost:hover{border-color:var(--mint);}
+  .note{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--dim);margin:6px 0 16px;}
+  footer{border-top:1px solid var(--line2);margin-top:56px;padding:28px 0 48px;}
+  footer .wrap{display:flex;gap:20px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.08em;}
+  footer a{text-decoration:none;}
+  footer a:hover{color:#fff;}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="index.html">ATISHA RAJPUROHIT</a>
+    <a class="back" href="index.html">← Back to the front page</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Everything.</h1>
+  <p class="sub">The full archive behind the front page: every lecture, artifact, lab, talk, and article, with sources.</p>
+
+  <section>
+    <div class="kicker">LECTURES AND ARTIFACTS · SUPPORTVECTORS AI AGENTS BOOTCAMP</div>
+
+    <div class="row">
+      <span class="num">LECTURE 1</span>
+      <h3>Evolution of Prompts and Context Engineering</h3>
+      <p>From prompts to context: how the discipline formed.</p>
+      <div class="chips">
+        <a class="chip solid" href="artifacts/prompts-deck.html" target="_blank">Open the artifact</a>
+        <a class="chip ghost" href="https://gail.wharton.upenn.edu/research-and-insights/tech-report-chain-of-thought/" target="_blank" rel="noopener">Paper: The Decreasing Value of Chain of Thought</a>
+        <a class="chip ghost" href="https://www.youtube.com/watch?v=cgD_K9VnOC8&t=7178s" target="_blank" rel="noopener">Recording (from 1:59:38)</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="num blue">LECTURE 2</span>
+      <h3>MCP Landscape, Security Risks and Mitigations</h3>
+      <p>An interactive risk grid: attacker types against lifecycle phases, plus a standalone attack surface explorer.</p>
+      <div class="chips">
+        <a class="chip solid" href="artifacts/mcp-threat-matrix.html" target="_blank">Open the Threat Matrix</a>
+        <a class="chip solid" href="artifacts/mcp-attack-surface.html" target="_blank">Open the Attack Surface explorer</a>
+        <a class="chip ghost" href="https://arxiv.org/abs/2503.23278" target="_blank" rel="noopener">Paper: MCP Landscape, Security Threats (arXiv)</a>
+        <a class="chip ghost" href="https://www.youtube.com/watch?v=1tw_2O8lcq0&t=269s" target="_blank" rel="noopener">Recording (from 4:29)</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="num">LECTURE 3</span>
+      <h3>Agentic Context Engineering</h3>
+      <p>The ACE loop: generate, reflect, curate.</p>
+      <div class="chips">
+        <a class="chip solid" href="artifacts/ace-deck.html" target="_blank">Open the artifact</a>
+        <a class="chip ghost" href="https://arxiv.org/abs/2510.04618" target="_blank" rel="noopener">Paper: Agentic Context Engineering (arXiv)</a>
+        <a class="chip ghost" href="https://www.youtube.com/watch?v=gYDwtX7qAho&t=11s" target="_blank" rel="noopener">Recording</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="num blue">LECTURE 4</span>
+      <h3>Agentic Memory, Mem0</h3>
+      <p>Memory that lets an agent have a past. One query traced end to end.</p>
+      <div class="chips">
+        <a class="chip solid" href="artifacts/mem0-lecture.html" target="_blank">Open the artifact</a>
+        <a class="chip ghost" href="https://arxiv.org/abs/2504.19413" target="_blank" rel="noopener">Paper: Mem0 (arXiv)</a>
+        <a class="chip ghost" href="https://www.youtube.com/watch?v=tbJIfvFWxVU&t=2s" target="_blank" rel="noopener">Recording</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="num">LECTURE 5</span>
+      <h3>Loop and Harness Engineering</h3>
+      <p>A 34 step walkthrough of how agent harnesses became planner, generator, evaluator. Taught from Anthropic's engineering articles.</p>
+      <div class="chips">
+        <a class="chip solid" href="artifacts/harness-evolution.html" target="_blank">Open the artifact</a>
+        <a class="chip ghost" href="https://www.anthropic.com/engineering/harness-design-long-running-apps" target="_blank" rel="noopener">Article: Harness design for long-running apps</a>
+        <a class="chip ghost" href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents" target="_blank" rel="noopener">Article: Effective harnesses for long-running agents</a>
+        <a class="chip ghost" href="https://www.youtube.com/watch?v=vf7VOeX0Wh0" target="_blank" rel="noopener">Recording</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="num blue">LECTURE 6</span>
+      <h3>Agentic Systems, a case study into Openclaw</h3>
+      <p>Architecture, security, and mitigations.</p>
+      <div class="chips">
+        <a class="chip solid" href="artifacts/agentic-systems.html" target="_blank">Open the artifact</a>
+        <a class="chip ghost" href="https://www.youtube.com/watch?v=ZkgDJu3N1sA" target="_blank" rel="noopener">Recording</a>
+      </div>
+    </div>
+
+    <p class="note">Artifacts were built for a 50 to 60 person weekly cohort. Deck content teaches the papers and articles credited above.</p>
+  </section>
+
+  <section>
+    <div class="kicker">LABS</div>
+
+    <div class="row">
+      <span class="num">LECTURE 1</span>
+      <h3>RAG Faithfulness Checker</h3>
+      <p>Demonstrating hallucinations by LLMs and the robustness of your prompts. Built with promptfoo: two prompts, four cases, two traps.</p>
+      <div class="chips">
+        <a class="chip solid" href="https://github.com/AtishaRajpurohit/teaching-portfolio/tree/main/labs/rag-faithfulness-checker" target="_blank" rel="noopener">View the lab on GitHub</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="num">LECTURE 3</span>
+      <h3>Agentic Context Engineering Lab</h3>
+      <p>The context playbook built from scratch, showing the generate, reflect, curate loop.</p>
+      <div class="chips">
+        <a class="chip solid" href="https://github.com/AtishaRajpurohit/teaching-portfolio/tree/main/labs/agentic-context-engineering" target="_blank" rel="noopener">View the lab on GitHub</a>
+      </div>
+    </div>
+
+    <p class="note">Additional labs co-created with SupportVectors AI Labs, available on request considering copyright. Session recordings available on request.</p>
+  </section>
+
+  <section>
+    <div class="kicker">ON STAGE AND ON AIR</div>
+
+    <div class="row">
+      <h3>Enterprise RAG fireside at Snowflake, Menlo Park</h3>
+      <p>80+ technical leaders. Panel sourced and moderated.</p>
+      <div class="chips">
+        <a class="chip solid" href="https://www.youtube.com/watch?v=kRFh_aJMKKU" target="_blank" rel="noopener">Watch on YouTube</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <h3>AI Collective x SupportVectors event series</h3>
+      <p>Designed and directed a five event program reaching 400+ attendees.</p>
+    </div>
+
+    <div class="row">
+      <h3>Cloudely Conversations: From Data Chaos to Confident Decisions: Humans, Strategy and AI</h3>
+      <p>With Leslie Gestautas, Eric Dreshfield and Suren Reddy Katta.</p>
+      <div class="chips">
+        <a class="chip ghost" href="https://www.linkedin.com/events/7439594568393691136/" target="_blank" rel="noopener">Episode on LinkedIn</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <h3>Cloudely Conversations: The AI Precipice: The Pulse Beneath</h3>
+      <p>With Dr Cindy Gordon, Eric Dreshfield and Suren Reddy.</p>
+      <div class="chips">
+        <a class="chip ghost" href="https://www.linkedin.com/events/7467081805465063424/" target="_blank" rel="noopener">Episode on LinkedIn</a>
+        <a class="chip ghost" href="https://cloudely.com/podcasts/" target="_blank" rel="noopener">All episodes</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="kicker blue">TECHNICAL WRITING</div>
+
+    <div class="row">
+      <h3>DRAGIN</h3>
+      <p>Towards Data Science. Dynamic retrieval, decided by the model's own uncertainty.</p>
+      <div class="chips">
+        <a class="chip ghost" href="https://medium.com/data-science/dragin-dynamic-retrieval-augmented-generation-based-on-the-information-needs-of-large-language-dbdb9aabc1ef" target="_blank" rel="noopener">Read on Medium</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <h3>Agentic Context Engineering</h3>
+      <p>Towards AI. Tactful determinism for stochastic LLMs.</p>
+      <div class="chips">
+        <a class="chip ghost" href="https://medium.com/towards-artificial-intelligence/agentic-context-engineering-ace-456337c0b0ea" target="_blank" rel="noopener">Read on Medium</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <h3>From Assumptions to Accuracy</h3>
+      <p>Towards Data Science. What breaks when your data does not match your priors.</p>
+      <div class="chips">
+        <a class="chip ghost" href="https://medium.com/data-science/from-assumptions-to-accuracy-the-role-of-conditional-probability-in-real-world-predictions-ebf9c9fe4bb9" target="_blank" rel="noopener">Read on Medium</a>
+        <a class="chip ghost" href="https://medium.com/@AtishaRajpurohit" target="_blank" rel="noopener">All writing</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="kicker">COURSES</div>
+    <div class="row">
+      <h3>SupportVectors AI Labs</h3>
+      <p>Assistant lecturer for the Sunday AI Agents bootcamp for the summer semester. Returning in fall as an assistant lecturer for the Large Language Models bootcamp.</p>
+      <div class="chips">
+        <a class="chip ghost" href="https://supportvectors.ai/courses/ai-agents-bootcamp/" target="_blank" rel="noopener">AI Agents Bootcamp</a>
+        <a class="chip ghost" href="https://supportvectors.ai/courses/llm-rag-fine-tuning-and-mlops/" target="_blank" rel="noopener">LLM Bootcamp</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap">
+    <a href="resume.pdf" target="_blank">RESUME PDF</a>
+    <a href="https://www.linkedin.com/in/atisha-rajpurohit" target="_blank" rel="noopener">LINKEDIN</a>
+    <a href="https://github.com/AtishaRajpurohit" target="_blank" rel="noopener">GITHUB</a>
+    <a href="https://medium.com/@AtishaRajpurohit" target="_blank" rel="noopener">MEDIUM</a>
+    <a href="mailto:atisha.rajpurohit@gmail.com">EMAIL</a>
+  </div>
+</footer>
+</body>
+</html>

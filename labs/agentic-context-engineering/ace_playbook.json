@@ -1,0 +1,75 @@
+{
+  "skills": {
+    "sql_data_conventions-00001": {
+      "id": "sql_data_conventions-00001",
+      "section": "sql_data_conventions",
+      "content": "Query fct_orders_v2 instead of the deprecated orders view",
+      "helpful": 2,
+      "harmful": 0,
+      "neutral": 0,
+      "created_at": "2026-07-19T22:25:30.522564+00:00",
+      "updated_at": "2026-07-19T22:26:43.174945+00:00",
+      "embedding": null,
+      "status": "active"
+    },
+    "sql_data_conventions-00002": {
+      "id": "sql_data_conventions-00002",
+      "section": "sql_data_conventions",
+      "content": "Filter is_test = FALSE on all order revenue and count queries",
+      "helpful": 2,
+      "harmful": 0,
+      "neutral": 0,
+      "created_at": "2026-07-19T22:25:30.522598+00:00",
+      "updated_at": "2026-07-19T22:26:43.174957+00:00",
+      "embedding": null,
+      "status": "active"
+    },
+    "sql_data_conventions-00003": {
+      "id": "sql_data_conventions-00003",
+      "section": "sql_data_conventions",
+      "content": "Divide amount by 100.0 to convert stored cents to dollars",
+      "helpful": 2,
+      "harmful": 0,
+      "neutral": 0,
+      "created_at": "2026-07-19T22:25:30.522606+00:00",
+      "updated_at": "2026-07-19T22:26:43.174964+00:00",
+      "embedding": null,
+      "status": "active"
+    },
+    "sql_data_conventions-00004": {
+      "id": "sql_data_conventions-00004",
+      "section": "sql_data_conventions",
+      "content": "Convert created_at to America/Los_Angeles timezone before truncating to day",
+      "helpful": 2,
+      "harmful": 0,
+      "neutral": 0,
+      "created_at": "2026-07-19T22:25:30.522615+00:00",
+      "updated_at": "2026-07-19T22:26:43.174974+00:00",
+      "embedding": null,
+      "status": "active"
+    },
+    "sql_data_conventions-00005": {
+      "id": "sql_data_conventions-00005",
+      "section": "sql_data_conventions",
+      "content": "Scope convention rules by query's data columns, not question wording",
+      "helpful": 1,
+      "harmful": 0,
+      "neutral": 0,
+      "created_at": "2026-07-19T22:26:43.174992+00:00",
+      "updated_at": "2026-07-19T22:26:43.174996+00:00",
+      "embedding": null,
+      "status": "active"
+    }
+  },
+  "sections": {
+    "sql_data_conventions": [
+      "sql_data_conventions-00001",
+      "sql_data_conventions-00002",
+      "sql_data_conventions-00003",
+      "sql_data_conventions-00004",
+      "sql_data_conventions-00005"
+    ]
+  },
+  "next_id": 5,
+  "similarity_decisions": {}
+}

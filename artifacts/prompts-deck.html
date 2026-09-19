@@ -1,0 +1,344 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What is happening with prompts?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14151C; --ink2:#1B1D27; --panel:#20222D;
+    --paper:#ECEAE3; --dim:#8C8D99;
+    --amber:#E9A24B; --amber-soft:rgba(233,162,75,.14);
+    --sage:#7CB3A6; --sage-soft:rgba(124,179,166,.13);
+    --clay:#D2694B; --clay-soft:rgba(210,105,75,.13);
+    --line:rgba(236,234,227,.12);
+    --display:'Fraunces',Georgia,serif; --body:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--ink);color:var(--paper);font-family:var(--body);overflow:hidden;-webkit-font-smoothing:antialiased}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:5;background:radial-gradient(120% 90% at 50% 0%,transparent 55%,rgba(0,0,0,.45) 100%)}
+  .deck{position:fixed;inset:0}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;padding:clamp(36px,5vw,96px);opacity:0}
+  .slide.active{display:flex;animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @media(prefers-reduced-motion:reduce){.slide.active{animation:none;opacity:1}}
+
+  .eyebrow{font-family:var(--mono);font-size:clamp(11px,1vw,13px);letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:1.1em}
+  h1{font-family:var(--display);font-weight:500;line-height:1.02;font-size:clamp(40px,7vw,98px);letter-spacing:-.02em}
+  h2{font-family:var(--display);font-weight:500;line-height:1.05;font-size:clamp(30px,4.8vw,62px);letter-spacing:-.015em}
+  .big{font-family:var(--display);font-weight:400;line-height:1.08;font-size:clamp(28px,4.2vw,56px);letter-spacing:-.01em;max-width:18ch}
+  .sub{font-size:clamp(16px,1.6vw,22px);color:var(--dim);margin-top:1.1em;max-width:46ch;line-height:1.5}
+  .note{font-size:clamp(15px,1.45vw,19px);color:var(--paper);margin-top:1.1em;max-width:50ch;line-height:1.55}
+  .note .hl{color:var(--amber)} .note .hl2{color:var(--sage)}
+  em{font-style:italic;color:var(--amber)}
+  .sig{font-family:var(--mono);color:var(--dim);font-size:clamp(12px,1.1vw,15px);margin-top:auto;padding-top:26px;letter-spacing:.04em}
+  .author{font-family:var(--mono);color:var(--paper);letter-spacing:.06em}
+
+  .num{font-family:var(--mono);font-size:clamp(56px,11vw,140px);font-weight:500;line-height:.8;-webkit-text-stroke:1px var(--amber);color:transparent}
+  .divider h2{margin-top:.18em;max-width:16ch} .divider .sub{margin-top:.7em}
+  .quote{font-family:var(--display);font-style:italic;font-size:clamp(22px,2.9vw,38px);line-height:1.25;max-width:24ch}
+  .quote .cite{display:block;font-family:var(--mono);font-style:normal;font-size:clamp(12px,1.1vw,15px);color:var(--amber);letter-spacing:.06em;margin-top:1em}
+
+  figure{margin-top:.7em;width:100%}
+  svg{width:100%;height:auto;display:block}
+  .fig-tall svg{max-height:60vh} .fig-wide svg{max-height:50vh}
+  .head-row{display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap}
+
+  .faces{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:1.2em}
+  @media(max-width:1000px){.faces{grid-template-columns:repeat(2,1fr)}}
+  .face{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px}
+  .face .ico{width:52px;height:52px}
+  .face h4{font-family:var(--mono);font-size:13px;color:var(--amber);letter-spacing:.01em}
+  .face p{font-size:13px;line-height:1.45;color:var(--paper)}
+  .face p em{color:var(--sage)}
+
+  .chips{display:flex;flex-wrap:wrap;gap:9px 10px;margin-top:1em}
+  .chip{font-family:var(--mono);font-size:clamp(12px,1.05vw,14px);color:var(--paper);border:1px solid var(--line);padding:7px 13px;border-radius:2px;background:var(--ink2)}
+  .chip.a{border-color:rgba(233,162,75,.4);color:var(--amber)}
+  .chip.s{border-color:rgba(124,179,166,.4);color:var(--sage)}
+
+  .find{list-style:none;margin-top:1.2em;display:grid;gap:13px;max-width:34ch}
+  .find li{display:flex;gap:14px;align-items:baseline;font-size:clamp(16px,1.65vw,21px)}
+  .find .k{font-family:var(--mono);color:var(--amber);font-size:.8em;min-width:6ch}
+
+  .pf{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,64px);margin-top:1em}
+  @media(max-width:900px){.pf{grid-template-columns:1fr;gap:20px}}
+  .pf h5{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);margin:0 0 .7em}
+  .steps{counter-reset:s;display:grid;gap:10px}
+  .steps li{list-style:none;display:flex;gap:12px;align-items:baseline;font-size:clamp(14px,1.3vw,17px);line-height:1.4}
+  .steps li::before{counter-increment:s;content:counter(s,decimal-leading-zero);font-family:var(--mono);color:var(--amber);font-size:.85em}
+  code{font-family:var(--mono);background:var(--ink2);border:1px solid var(--line);padding:1px 6px;border-radius:3px;color:var(--amber);font-size:.9em}
+
+  .bar{position:fixed;left:0;bottom:0;height:3px;background:var(--amber);z-index:7;transition:width .4s ease}
+  .count{position:fixed;right:22px;bottom:16px;z-index:7;font-family:var(--mono);font-size:12px;color:var(--dim);letter-spacing:.1em}
+  .hint{position:fixed;left:22px;bottom:16px;z-index:7;font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.08em;opacity:.7}
+  .notes{position:fixed;left:0;right:0;bottom:0;z-index:8;background:#0D0E14;border-top:1px solid var(--line);padding:18px 26px 26px;transform:translateY(110%);transition:transform .3s ease;max-height:42vh;overflow:auto}
+  .notes.show{transform:none}
+  .notes h4{font-family:var(--mono);color:var(--amber);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+  .notes p{color:var(--paper);font-size:15px;line-height:1.55;max-width:90ch}
+  .notes .small{color:var(--dim);font-family:var(--mono);font-size:11px;margin-top:10px}
+</style>
+
+<div class="deck" id="deck">
+
+  <section class="slide" data-notes="Open warm. We prompt every day, but rarely ask what's happening to prompting itself. Three acts: context engineering, chain-of-thought, and how we get better. ~30s.">
+    <div class="eyebrow">SupportVectors · AI Agents Bootcamp</div>
+    <h1>What is happening<br>with prompts?</h1>
+    <p class="sub">Context engineering over prompt engineering, the quiet death of chain-of-thought, and how to actually make prompts better.</p>
+    <div class="sig"><span class="author">Atisha Rajpurohit</span> &nbsp;·&nbsp; an introduction</div>
+  </section>
+
+  <section class="slide" data-notes="Statistical hook. A prompt amplifies the uncertainty in YOUR instructions. Ambiguous = wide spread (high variance); structured = tight spread. Error = reducible (yours) + irreducible (Gaussian noise σ², always there). You reap what you sow. ~60s.">
+    <div class="eyebrow">The one lever you control</div>
+    <h2>Your prompt sets the variance.<br>The model only draws from it.</h2>
+    <figure class="fig-wide"><svg id="s2fig" viewBox="0 0 1000 440" aria-label="Output distributions and bias-variance decomposition"></svg></figure>
+  </section>
+
+  <section class="slide" data-notes="Before 'what changed', show how much language already does. Not just the chat box — docstrings, agent files, memory, inter-agent messages. Language became the connective tissue. This is why prompts still matter. ~75s.">
+    <div class="eyebrow">Where language lives now · the many faces of language</div>
+    <h2 style="font-size:clamp(26px,3.6vw,46px)">One medium, many forms.</h2>
+    <div class="faces" id="s3faces"></div>
+    <p class="note" style="margin-top:1.1em">Language stopped being the <span class="hl2">input</span>. It became the <span class="hl">connective tissue</span> — config, docs, tests, and the protocol between agents.</p>
+  </section>
+
+  <section class="slide divider" data-notes="Section 1. Name and date the buzzword: June 2025, Karpathy and Shopify's CEO Tobi Lütke. Read the quote, then show it's not a replacement. ~40s.">
+    <div class="num">01</div>
+    <h2>Context engineering<br>over prompt engineering?</h2>
+    <p class="quote">"…the art of filling the context window with just the right information for the next step."
+      <span class="cite">— Karpathy &amp; Lütke, June 2025</span></p>
+  </section>
+
+  <section class="slide" data-notes="The 'switch' was an accumulation. Walk left to right: one small prompt → windows exploded → RAG → agents make info persistent and multi-source. The amber prompt sits at the core of every frame and never leaves. Prompt is a SUBSET of context. ~80s.">
+    <div class="eyebrow">01 · The switch wasn't a switch — it was an accumulation</div>
+    <h2 style="font-size:clamp(26px,3.6vw,46px);margin-bottom:.1em">The window kept filling. The prompt stayed at its core.</h2>
+    <figure class="fig-wide"><svg id="s5fig" viewBox="0 0 1000 470" aria-label="Growing context windows over time"></svg></figure>
+  </section>
+
+  <section class="slide" data-notes="Land the thesis, breathing-room slide. The job never changed — right information, right time. Software engineering didn't kill programming; it gave it discipline. Context engineering subsumes prompt engineering, it doesn't replace it. ~45s.">
+    <div class="eyebrow">01 · Same job, bigger surface</div>
+    <p class="big">Get the right information to the model at the right time.</p>
+    <p class="note">That was always the job. Prompt engineering controlled one input; context engineering controls a system of inputs. It doesn't <span class="hl2">replace</span> prompt engineering — it <span class="hl">subsumes</span> it.</p>
+  </section>
+
+  <section class="slide" data-notes="To engineer context, know what it's made of. Six layers assemble silently every call. The skill isn't filling them all — it's knowing which one to adjust when something breaks. ~50s.">
+    <div class="eyebrow">01 · What context is made of</div>
+    <figure class="fig-tall"><svg id="s7fig" viewBox="0 0 1000 560" aria-label="The six layers of context"></svg></figure>
+  </section>
+
+  <section class="slide" data-notes="The honest twist: more context is NOT better. Chroma 2025, 18 frontier models — accuracy drops long before the window fills. Lost-in-the-middle. The model can only reap what it can reach. ~50s.">
+    <div class="eyebrow">01 · More is not better</div>
+    <p class="big" style="color:var(--clay)">Context rot.</p>
+    <p class="note" style="font-family:var(--mono);color:var(--sage);max-width:60ch">18 frontier models tested · accuracy degrades long before the window fills. — Chroma, 2025</p>
+    <p class="note">Start and end: handled well. Buried in the middle: lost. The model can only reap what it can <em>reach</em>.</p>
+  </section>
+
+  <section class="slide divider" data-notes="Section 2. Pivot from context to technique. 'Let's think step by step' was magic for years. It's now fading — and the data is recent. ~30s.">
+    <div class="num">02</div>
+    <h2>The quiet death of<br>chain-of-thought.</h2>
+    <p class="sub">For years, five words — "let's think step by step" — were magic.</p>
+  </section>
+
+  <section class="slide" data-notes="Wharton GAIL 2026, crisply. On reasoning models CoT barely helps, costs real time, sometimes hurts — because they already reason by default. The job moved: decide WHEN to spend reasoning. ~70s.">
+    <div class="eyebrow">02 · Wharton GAIL, 2026</div>
+    <h2>"Think step by step" is fading.</h2>
+    <ul class="find">
+      <li><span class="k">+2–3%</span><span>accuracy on reasoning models</span></li>
+      <li><span class="k">+20–80%</span><span>more time to run</span></li>
+      <li><span class="k">risk</span><span>sometimes introduces errors</span></li>
+      <li><span class="k">why</span><span>they already reason by default</span></li>
+    </ul>
+    <p class="note">The job moved: not <span class="hl2">teach the model to think</span>, but <span class="hl">decide when to spend reasoning</span>.</p>
+  </section>
+
+  <section class="slide divider" data-notes="Section 3. The payoff. If a prompt is a specification — and docstrings, inter-agent messages, rubrics all are — they deserve what code gets: versioning, tests, measurement. ~35s.">
+    <div class="num">03</div>
+    <h2>Treat prompts like code.</h2>
+    <p class="sub">A prompt is a specification. Specifications get tested — not vibed.</p>
+  </section>
+
+  <section class="slide" data-notes="Introduce promptfoo with substance. Credibility: 350k devs, 25% Fortune 500, OpenAI acquired Mar 2026, still open source. How it works: one config (prompts × models × tests), one command, a scored matrix. What it checks: deterministic + model-graded assertions. It's pre-deploy testing, not live monitoring. ~90s.">
+    <div class="eyebrow">03 · The tool</div>
+    <div class="head-row">
+      <h1 style="font-size:clamp(40px,6.5vw,82px)">promptfoo</h1>
+      <div class="chips">
+        <span class="chip">350k+ developers</span>
+        <span class="chip">25% of the Fortune 500</span>
+        <span class="chip a">acquired by OpenAI · Mar 2026 · open source</span>
+      </div>
+    </div>
+    <div class="pf">
+      <div>
+        <h5>How it works — test-driven prompting</h5>
+        <ul class="steps">
+          <li>Write one config: <code>prompts × models × tests</code></li>
+          <li>Run <code>promptfoo eval</code> — every combination scored</li>
+          <li>Read the matrix: green pass, red fail, with cost &amp; latency</li>
+        </ul>
+        <p class="note" style="margin-top:1em;font-size:15px">Local-first CLI. Drops into CI — a prompt change that breaks a test fails the build.</p>
+      </div>
+      <div>
+        <h5>What it can check</h5>
+        <div class="chips" style="margin-top:0">
+          <span class="chip s">contains / regex</span>
+          <span class="chip s">is-json</span>
+          <span class="chip s">latency · cost</span>
+          <span class="chip a">llm-rubric (LLM-as-judge)</span>
+          <span class="chip a">similarity</span>
+          <span class="chip a">factuality</span>
+        </div>
+        <h5 style="margin-top:1.3em">What teams use it for</h5>
+        <div class="chips" style="margin-top:0">
+          <span class="chip">compare prompts</span>
+          <span class="chip">compare models</span>
+          <span class="chip">regression suite</span>
+          <span class="chip">red-team / injection</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-notes="The demo / result. One model, two prompts — lax vs strict grounding. Four questions, two traps whose answers aren't in the passage. Lax volunteers real facts from memory (330m, 1953); strict refuses. Walk the grid. Screenshot is the backup. ~80s.">
+    <div class="eyebrow">03 · The demo — RAG faithfulness</div>
+    <h2 style="margin-bottom:.1em">Does it stay honest?</h2>
+    <figure class="fig-wide"><svg id="s13fig" viewBox="0 0 1040 380" aria-label="RAG faithfulness results, lax versus strict"></svg></figure>
+  </section>
+
+  <section class="slide" data-notes="The counterintuitive punchline. Lax answers were TRUE — 330m, 1953 — and still wrong for a RAG system: ungrounded, uncitable, and on the next doc a confident falsehood. Faithfulness ≠ correctness. The PROMPT decided it. ~55s.">
+    <p class="big">Faithfulness isn't<br>"is it correct."<br>It's <em>"is it grounded."</em></p>
+    <p class="note">The lax answers were <span class="hl2">true</span> — and still wrong. Same model. The <span class="hl">prompt</span> decided whether it hallucinated.</p>
+  </section>
+
+  <section class="slide" data-notes="Close on the through-line. Prompt engineering grew into context engineering. CoT's reasoning moved inside the model. We improve by treating language like code — because in these systems language IS the code. The names changed; the essence remained. Hand to the professor. ~40s.">
+    <div class="eyebrow">In closing</div>
+    <p class="big">The names changed.<br>The essence remained.</p>
+    <div class="sig"><span class="author">Thank you — Atisha</span> &nbsp;·&nbsp; don't let the shortness of Silicon Valley fool you.</div>
+  </section>
+
+</div>
+
+<div class="bar" id="bar"></div>
+<div class="count" id="count"></div>
+<div class="hint">← → navigate &nbsp;·&nbsp; N notes &nbsp;·&nbsp; F fullscreen</div>
+<div class="notes" id="notes"><h4>Speaker notes</h4><p id="notesText"></p><div class="small">Press N to hide</div></div>
+
+<script>
+const TAU=Math.PI*2;
+
+(function(){
+  const x0=80,x1=690,base=330,top=60,dMin=-6,dMax=6;
+  const px=d=>x0+(d-dMin)/(dMax-dMin)*(x1-x0);
+  const pdf=(d,s)=>Math.exp(-(d*d)/(2*s*s))/(s*Math.sqrt(TAU));
+  const A=190/pdf(0,0.9);
+  const curve=s=>{let p='';for(let d=dMin;d<=dMax;d+=0.12){p+=(d===dMin?'M':'L')+px(d).toFixed(1)+' '+(base-pdf(d,s)*A).toFixed(1)}return p};
+  const Af=42/pdf(0,0.55); let fl='';for(let d=dMin;d<=dMax;d+=0.12){fl+=(d===dMin?'M':'L')+px(d).toFixed(1)+' '+(base-pdf(d,0.55)*Af).toFixed(1)}
+  const el=document.getElementById('s2fig'); if(el) el.innerHTML=`
+    <defs><style>.t{font-family:var(--mono);font-size:12px;fill:var(--dim)}.tl{font-family:var(--mono);font-size:12px}</style></defs>
+    <line x1="${x0}" y1="${base}" x2="${x1}" y2="${base}" stroke="var(--line)"/>
+    <line x1="${px(0)}" y1="${top}" x2="${px(0)}" y2="${base}" stroke="var(--line)" stroke-dasharray="3 5"/>
+    <text x="${px(0)}" y="${base+24}" text-anchor="middle" class="t">intended output</text>
+    <text x="${x1}" y="${base+24}" text-anchor="end" class="t">output space →</text>
+    <path d="${fl} L ${x1} ${base} L ${x0} ${base} Z" fill="var(--clay-soft)"/><path d="${fl}" fill="none" stroke="var(--clay)" stroke-width="1.4" stroke-dasharray="4 4"/>
+    <path d="${curve(2.2)}" fill="none" stroke="var(--dim)" stroke-width="2.2"/>
+    <path d="${curve(0.9)} L ${px(0)} ${base} Z" fill="var(--amber-soft)"/><path d="${curve(0.9)}" fill="none" stroke="var(--amber)" stroke-width="2.6"/>
+    <text x="${px(3.0)}" y="${base-pdf(3.0,2.2)*A-10}" class="tl" fill="var(--dim)">ambiguous · high variance</text>
+    <text x="${px(0)+12}" y="${top+22}" class="tl" fill="var(--amber)">structured · low variance</text>
+    <text x="${px(0)}" y="${base-18}" text-anchor="middle" class="tl" fill="var(--clay)">irreducible ε ~ 𝒩(0, σ²)</text>
+    <g transform="translate(745,110)">
+      <text x="0" y="0" class="tl" fill="var(--paper)" style="font-size:14px">E[(ŷ−y)²] =</text>
+      <text x="0" y="36" class="tl" fill="var(--amber)" style="font-size:14px">Bias² + Variance</text>
+      <line x1="0" y1="46" x2="150" y2="46" stroke="var(--amber)"/>
+      <text x="0" y="64" class="t" style="font-size:11px">reducible — your prompt</text>
+      <text x="0" y="104" class="tl" fill="var(--clay)" style="font-size:14px">+  σ²</text>
+      <line x1="0" y1="114" x2="40" y2="114" stroke="var(--clay)"/>
+      <text x="0" y="132" class="t" style="font-size:11px">irreducible — always remains,</text>
+      <text x="0" y="148" class="t" style="font-size:11px">Gaussian noise</text>
+    </g>`;
+})();
+
+(function(){
+  const I={
+    system:`<g fill="none" stroke="var(--amber)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="18" y="14" width="30" height="24" rx="6"/><line x1="33" y1="14" x2="33" y2="7"/><circle cx="33" cy="5" r="2.3" fill="var(--amber)"/><circle cx="27" cy="25" r="2.4" fill="var(--amber)" stroke="none"/><circle cx="39" cy="25" r="2.4" fill="var(--amber)" stroke="none"/><line x1="27" y1="32" x2="39" y2="32"/><line x1="16" y1="48" x2="50" y2="48"/><line x1="16" y1="56" x2="42" y2="56"/></g>`,
+    tool:`<g fill="none" stroke="var(--amber)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="10" width="30" height="40" rx="4"/><line x1="18" y1="20" x2="36" y2="20"/><line x1="18" y1="28" x2="36" y2="28"/><line x1="18" y1="36" x2="30" y2="36"/><circle cx="48" cy="48" r="7"/><circle cx="48" cy="48" r="2.2" fill="var(--amber)" stroke="none"/><line x1="48" y1="38" x2="48" y2="41"/><line x1="48" y1="55" x2="48" y2="58"/><line x1="38" y1="48" x2="41" y2="48"/><line x1="55" y1="48" x2="58" y2="48"/></g>`,
+    file:`<g fill="none" stroke="var(--amber)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 8 h20 l12 12 v40 h-32 z"/><path d="M40 8 v12 h12"/><polyline points="25,34 30,39 25,44"/><line x1="34" y1="44" x2="46" y2="44"/><line x1="25" y1="52" x2="46" y2="52"/></g>`,
+    memory:`<g fill="none" stroke="var(--amber)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M30 12 c-9 0 -15 7 -13 15 c-6 3 -5 13 2 15 c1 8 11 11 16 6 c5 5 16 3 17 -5 c8 -1 10 -12 3 -16 c2 -8 -5 -16 -14 -15 c-3 -4 -11 -4 -15 -0 Z"/><path d="M32 16 v40"/><path d="M24 28 q7 1 1 8"/><path d="M44 30 q-7 1 -1 8"/></g>`,
+    msg:`<g fill="none" stroke="var(--amber)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="26" width="20" height="16" rx="4"/><circle cx="12" cy="34" r="1.9" fill="var(--amber)" stroke="none"/><circle cx="20" cy="34" r="1.9" fill="var(--amber)" stroke="none"/><rect x="44" y="26" width="20" height="16" rx="4"/><circle cx="50" cy="34" r="1.9" fill="var(--amber)" stroke="none"/><circle cx="58" cy="34" r="1.9" fill="var(--amber)" stroke="none"/><path d="M28 14 h14 v10 h-5 l-3 4 v-4 h-3 z"/><line x1="28" y1="50" x2="42" y2="50"/><polyline points="38,46 43,50 38,54"/></g>`
+  };
+  const faces=[
+    ['system','System prompts','Who the model is — identity, rules, tone.'],
+    ['tool','Tool docstrings','The description an agent reads to call a tool. The docstring *is* the interface.'],
+    ['file','Agent files','CLAUDE.md, AGENTS.md — a README for a machine.'],
+    ['memory','Memory entries','Facts stored about you, re-injected each session.'],
+    ['msg','Inter-agent msgs','One agent\u2019s output becomes another\u2019s prompt.']
+  ];
+  const el=document.getElementById('s3faces'); if(el) el.innerHTML=faces.map(([k,t,d])=>`<div class="face"><svg class="ico" viewBox="0 0 70 70">${I[k]}</svg><h4>${t}</h4><p>${d.replace(/\*(.+?)\*/g,'<em>$1</em>')}</p></div>`).join('');
+})();
+
+(function(){
+  const frames=[
+    {yr:'2020',w:120,h:90,chips:[['prompt','amber']]},
+    {yr:'2023',w:165,h:150,chips:[['prompt','amber'],['…room to spare','dim']],note:'windows explode'},
+    {yr:'2024',w:185,h:210,chips:[['prompt','amber'],['retrieved docs','sage']],note:'RAG'},
+    {yr:'2025',w:205,h:280,chips:[['prompt','amber'],['retrieved docs','sage'],['tools','sage'],['memory','sage'],['other agents','sage']],note:'agents'}
+  ];
+  const C={amber:'var(--amber)',sage:'var(--sage)',dim:'var(--dim)'};
+  const baseY=350,gap=20; let x=30,parts='';
+  frames.forEach((f,i)=>{const fx=x,fy=baseY-f.h;
+    parts+=`<rect x="${fx}" y="${fy}" width="${f.w}" height="${f.h}" rx="10" fill="var(--sage-soft)" stroke="var(--sage)" stroke-width="1.4"/>`;
+    parts+=`<text x="${fx+f.w/2}" y="${fy-14}" text-anchor="middle" font-family="var(--mono)" font-size="13" fill="var(--amber)">${f.yr}</text>`;
+    if(f.note) parts+=`<text x="${fx+f.w/2}" y="${fy-30}" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="var(--dim)">+ ${f.note}</text>`;
+    let cy=baseY-14; f.chips.forEach(([c,col])=>{const cw=f.w-20;
+      parts+=`<rect x="${fx+10}" y="${cy-22}" width="${cw}" height="20" rx="4" fill="${col==='amber'?'var(--amber-soft)':'var(--ink2)'}" stroke="${C[col]}" stroke-width="1"/>`;
+      parts+=`<text x="${fx+16}" y="${cy-8}" font-family="var(--mono)" font-size="11" fill="${C[col]}">${c}</text>`; cy-=26;});
+    if(i<frames.length-1){parts+=`<line x1="${fx+f.w+4}" y1="${baseY-30}" x2="${fx+f.w+gap+6}" y2="${baseY-30}" stroke="var(--line)" stroke-width="1.5"/><polyline points="${fx+f.w+gap+2},${baseY-34} ${fx+f.w+gap+8},${baseY-30} ${fx+f.w+gap+2},${baseY-26}" fill="none" stroke="var(--dim)" stroke-width="1.5"/>`;}
+    x+=f.w+gap+24;});
+  const tw=x-24;
+  parts+=`<path d="M30 ${baseY+18} v8 h${tw-30} v-8" fill="none" stroke="var(--sage)" stroke-width="1.4"/>`;
+  parts+=`<text x="${(30+tw)/2}" y="${baseY+50}" text-anchor="middle" font-family="var(--mono)" font-size="14" fill="var(--sage)" letter-spacing="2">CONTEXT ENGINEERING</text>`;
+  parts+=`<text x="${(30+tw)/2}" y="${baseY+72}" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--amber)">prompt ⊂ context · the core never left</text>`;
+  const el=document.getElementById('s5fig'); if(el) el.innerHTML=parts;
+})();
+
+(function(){
+  const layers=[['01','System prompt','who the model is — rules, tone','var(--amber)'],['02','Persistent memory','what it remembers about you','var(--amber)'],['03','Retrieval (RAG)','facts pulled from a knowledge base','var(--sage)'],['04','Tool definitions','the actions it can take','var(--sage)'],['05','Attachments','files & images in this session','var(--sage)'],['06','Conversation history','what\u2019s already been said','var(--sage)']];
+  const X=60,W=880,top=34,rh=72,gap=10;
+  let parts=`<rect x="${X-16}" y="${top-16}" width="${W+32}" height="${layers.length*(rh+gap)+22}" rx="14" fill="none" stroke="var(--line)" stroke-width="1.4"/><text x="${X-16}" y="${top-24}" font-family="var(--mono)" font-size="12" fill="var(--dim)" letter-spacing="2">THE CONTEXT WINDOW</text>`;
+  layers.forEach(([n,t,d,col],i)=>{const y=top+i*(rh+gap);
+    parts+=`<rect x="${X}" y="${y}" width="${W}" height="${rh}" rx="9" fill="${i<2?'var(--amber-soft)':'var(--sage-soft)'}" stroke="${col}" stroke-width="1.3"/>`;
+    parts+=`<text x="${X+22}" y="${y+rh/2+8}" font-family="var(--display)" font-size="26" fill="${col}" opacity="0.7">${n}</text>`;
+    parts+=`<text x="${X+86}" y="${y+30}" font-family="var(--mono)" font-size="16" fill="${col}">${t}</text>`;
+    parts+=`<text x="${X+86}" y="${y+52}" font-family="var(--body)" font-size="14" fill="var(--paper)">${d}</text>`;});
+  const el=document.getElementById('s7fig'); if(el) el.innerHTML=parts;
+})();
+
+(function(){
+  const el=document.getElementById('s13fig'); if(!el) return; el.innerHTML=`
+  <defs><style>.h{font-family:var(--mono);font-size:15px;letter-spacing:.06em}.q{font-family:var(--display);font-size:18px;fill:var(--paper)}.a{font-family:var(--mono);font-size:13px}.pct{font-family:var(--display);font-size:30px}</style></defs>
+  <text x="470" y="36" class="h" fill="var(--clay)">LAX PROMPT</text><text x="470" y="64" class="pct" fill="var(--clay)">50%</text>
+  <text x="800" y="36" class="h" fill="var(--sage)">STRICT PROMPT</text><text x="800" y="64" class="pct" fill="var(--sage)">100%</text>
+  <line x1="40" y1="92" x2="1000" y2="92" stroke="var(--line)"/>
+  <text x="40" y="150" class="q">How tall is the Eiffel Tower?</text>
+  <rect x="430" y="120" width="280" height="46" rx="4" fill="var(--clay-soft)" stroke="var(--clay)"/><text x="446" y="148" class="a" fill="var(--clay)">✗ "≈ 330 m" — not in context</text>
+  <rect x="760" y="120" width="240" height="46" rx="4" fill="var(--sage-soft)" stroke="var(--sage)"/><text x="776" y="148" class="a" fill="var(--sage)">✓ "context does not say"</text>
+  <text x="40" y="232" class="q">When was Everest first summited?</text>
+  <rect x="430" y="202" width="280" height="46" rx="4" fill="var(--clay-soft)" stroke="var(--clay)"/><text x="446" y="230" class="a" fill="var(--clay)">✗ "1953, Hillary &amp; Norgay"</text>
+  <rect x="760" y="202" width="240" height="46" rx="4" fill="var(--sage-soft)" stroke="var(--sage)"/><text x="776" y="230" class="a" fill="var(--sage)">✓ "context does not say"</text>
+  <line x1="40" y1="290" x2="1000" y2="290" stroke="var(--line)"/>
+  <text x="40" y="330" class="a" fill="var(--dim)">Same model. Both lax answers are factually TRUE — and ungrounded. The prompt decided.</text>`;
+})();
+
+const slides=[...document.querySelectorAll('.slide')];
+const bar=document.getElementById('bar'),count=document.getElementById('count'),notes=document.getElementById('notes'),notesText=document.getElementById('notesText');
+let i=0,notesOn=false;
+function show(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,k)=>s.classList.toggle('active',k===i));bar.style.width=((i+1)/slides.length*100)+'%';count.textContent=String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');notesText.textContent=slides[i].dataset.notes||''}
+addEventListener('keydown',e=>{const k=e.key.toLowerCase();
+  if(['arrowright','arrowdown',' ','pagedown'].includes(k)){e.preventDefault();show(i+1)}
+  else if(['arrowleft','arrowup','pageup'].includes(k)){e.preventDefault();show(i-1)}
+  else if(e.key==='Home')show(0); else if(e.key==='End')show(slides.length-1);
+  else if(k==='n'){notesOn=!notesOn;notes.classList.toggle('show',notesOn)}
+  else if(k==='f'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+let sx=0;addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)show(i+(dx<0?1:-1))},{passive:true});
+addEventListener('click',e=>{if(e.target.closest('#notes'))return;e.clientX<innerWidth*0.18?show(i-1):show(i+1)});
+show(0);
+</script>

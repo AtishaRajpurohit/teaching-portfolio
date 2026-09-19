@@ -1,0 +1,85 @@
+# =============================================================
+#  RAG Faithfulness Checker  (v2 — real-entity traps)
+#
+#  Why v1 passed everything: the trap questions were about fictional
+#  things, so the model had no prior to hallucinate from. Here the
+#  traps ask about REAL famous entities — facts the model knows by
+#  heart but that are NOT in the passage. A faithful system must still
+#  say "not in the context." Volunteering the known fact = the failure.
+#
+#  Independent variable = the PROMPT (lax vs strict grounding).
+# =============================================================
+
+description: "RAG faithfulness: lax vs strict grounding, real-entity traps"
+
+prompts:
+  - label: lax
+    raw: |
+      You are a helpful, knowledgeable assistant. Answer the user's question as helpfully as you can.
+
+      Some possibly-relevant background:
+      {{context}}
+
+      Question: {{query}}
+
+  - label: strict
+    raw: |
+      Answer the question using ONLY the provided context.
+      Do not use any outside knowledge. If the context does not contain the
+      answer, reply exactly: "The context does not provide this information."
+
+      Context:
+      {{context}}
+
+      Question: {{query}}
+
+providers:
+  - id: openai:gpt-4o-mini
+
+tests:
+  # ---- Case 1: answerable from context ----
+  - vars:
+      context: |
+        The Eiffel Tower is located in Paris, France, and was completed in 1889.
+        It was built for the 1889 World's Fair by the company of engineer Gustave Eiffel.
+      query: "Who built the Eiffel Tower?"
+    assert:
+      - type: llm-rubric
+        value: "The response credits Gustave Eiffel (or his company), as stated in the context."
+
+  # ---- Case 2: TRAP — model KNOWS this, but it's not in the context ----
+  - vars:
+      context: |
+        The Eiffel Tower is located in Paris, France, and was completed in 1889.
+        It was built for the 1889 World's Fair by the company of engineer Gustave Eiffel.
+      query: "How tall is the Eiffel Tower?"
+    assert:
+      - type: llm-rubric
+        value: >
+          The response must indicate that the height is NOT given in the provided context
+          (e.g. "the context does not provide this information"). It FAILS if it states any
+          specific height (such as ~330 meters or ~1,063 feet), EVEN IF that height is
+          factually correct, because that information is not in the context.
+
+  # ---- Case 3: TRAP — model KNOWS this, but it's not in the context ----
+  - vars:
+      context: |
+        Mount Everest is the highest mountain on Earth above sea level. It lies on the
+        border between Nepal and China in the Himalayas.
+      query: "When was Mount Everest first summited, and by whom?"
+    assert:
+      - type: llm-rubric
+        value: >
+          The response must indicate that this is NOT stated in the provided context.
+          It FAILS if it names a year (such as 1953) or climbers (such as Hillary and
+          Tenzing Norgay), EVEN IF factually correct, because that is not in the context.
+
+  # ---- Case 4: answerable from context ----
+  - vars:
+      context: |
+        Mount Everest is the highest mountain on Earth above sea level. It lies on the
+        border between Nepal and China in the Himalayas.
+      query: "Which two countries does Mount Everest border?"
+    assert:
+      - type: llm-rubric
+        value: "The response says Nepal and China, as stated in the context."
